@@ -9,6 +9,7 @@ import harry.mods.tutorialmod.interfaces.IHasModel;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -56,7 +57,6 @@ public class RegistryHandler
 	
 	public static void preInitRegistries()
 	{
-		
 	}
 	
 	public static void initRegistries()
