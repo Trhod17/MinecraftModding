@@ -1,0 +1,12 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "particle": "tutorial:blocks/electric_sintering_furnace_side",
+        "up": "tutorial:blocks/electric_sintering_furnace_side",
+        "down": "tutorial:blocks/electric_sintering_furnace_side",
+        "north": "tutorial:blocks/biomass_generator_side",
+        "east": "tutorial:blocks/biomass_generator_side",
+        "south": "tutorial:blocks/biomass_generator_side",
+        "west": "tutorial:blocks/biomass_generator_side"
+    }
+}
