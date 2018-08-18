@@ -1,25 +1,25 @@
-package harry.mod.objects.items;
+package harry.mods.tutorialmod.items;
 
-import harry.mod.Main;
-import harry.mod.init.ItemInit;
-import harry.mod.util.interfaces.IHasModel;
+import harry.mods.tutorialmod.Main;
+import harry.mods.tutorialmod.init.ItemInit;
+import harry.mods.tutorialmod.interfaces.IHasModel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
 public class ItemBase extends Item implements IHasModel
 {
-	public ItemBase(String name) 
+	public ItemBase(String name, CreativeTabs tab) 
 	{
 		setUnlocalizedName(name);
 		setRegistryName(name);
-		setCreativeTab(Main.TUTORIAL);
+		setCreativeTab(tab);
 		
 		ItemInit.ITEMS.add(this);
 	}
-
+	
 	@Override
 	public void registerModels() 
 	{
-		Main.proxy.registerItemRenderer(this, 0, "inventory");
+		Main.proxy.registerModel(this, 0);
 	}
 }
