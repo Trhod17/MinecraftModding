@@ -1,6 +1,20 @@
-itemGroup.tutorialtab=Tutorial Tab
+item.copper_ingot.name=Copper Ingot
+tile.copper_block.name=Copper Block
 
-container.sintering_furnace=Sintering Furnace
+container.copper_chest=Copper Chest
+tile.copper_chest.name=Copper Chest
+
+container.sintering_furnace=Sinterer
+tile.sintering_furnace.name=Sinterer
+
+container.electric_sintering_furnace=Electric Sinterer
+tile.electric_sintering_furnace.name=Electric Sinterer
+
+container.glowstone_generator=Glowstone Generator
+tile.glowstone_generator.name=Glowstone Generator
+
+itemGroup.tutorial=Tutorial Tab
+itemGroup.tutorialtab=Tutorial Tab
 
 generator.Copper=Copper
 generator.Custom=Tutorial Mod Biomes
@@ -42,4 +56,3 @@ tile.leaves_copper.name=Copper Leaves
 tile.sapling_copper.name=Copper Sapling
 tile.santa_hat.name=Santa Hat
 tile.sintering_furnace.name=Sintering Furnace
-
