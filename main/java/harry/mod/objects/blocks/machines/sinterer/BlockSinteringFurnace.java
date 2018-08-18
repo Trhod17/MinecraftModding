@@ -1,11 +1,11 @@
-package harry.mod.objects.blocks.machines.sinterer;
+package harry.mods.tutorialmod.blocks;
 
 import java.util.Random;
 
-import harry.mod.Main;
-import harry.mod.init.BlockInit;
-import harry.mod.objects.blocks.BlockBase;
-import harry.mod.util.Reference;
+import harry.mods.tutorialmod.Main;
+import harry.mods.tutorialmod.Reference;
+import harry.mods.tutorialmod.blocks.tileentity.TileEntitySinteringFurnace;
+import harry.mods.tutorialmod.init.BlockInit;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -16,6 +16,7 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
@@ -29,14 +30,14 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockSinteringFurnace extends BlockBase implements ITileEntityProvider
+public class BlockSinteringFurnace extends BlockBase
 {
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	public static final PropertyBool BURNING = PropertyBool.create("burning");
 	
 	public BlockSinteringFurnace(String name) 
 	{
-		super(name, Material.IRON);
+		super(name, Material.IRON, Main.TUTORIAL);
 		setSoundType(SoundType.METAL);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(BURNING, false));
 	}
@@ -44,13 +45,13 @@ public class BlockSinteringFurnace extends BlockBase implements ITileEntityProvi
 	@Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) 
 	{
-		return Item.getItemFromBlock(BlockInit.SINTERING_FURNACE);
+		return null; //Item.getItemFromBlock(BlockInit.SINTERING_FURNACE);
 	}
 	
 	@Override
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
 	{
-		return new ItemStack(BlockInit.SINTERING_FURNACE);
+		return null; //new ItemStack(BlockInit.SINTERING_FURNACE);
 	}
 	
 	@Override
@@ -88,8 +89,8 @@ public class BlockSinteringFurnace extends BlockBase implements ITileEntityProvi
 		IBlockState state = worldIn.getBlockState(pos);
 		TileEntity tileentity = worldIn.getTileEntity(pos);
 		
-		if(active) worldIn.setBlockState(pos, BlockInit.SINTERING_FURNACE.getDefaultState().withProperty(FACING, state.getValue(FACING)).withProperty(BURNING, true), 3);
-		else worldIn.setBlockState(pos, BlockInit.SINTERING_FURNACE.getDefaultState().withProperty(FACING, state.getValue(FACING)).withProperty(BURNING, false), 3);
+		//if(active) worldIn.setBlockState(pos, BlockInit.SINTERING_FURNACE.getDefaultState().withProperty(FACING, state.getValue(FACING)).withProperty(BURNING, true), 3);
+		//else worldIn.setBlockState(pos, BlockInit.SINTERING_FURNACE.getDefaultState().withProperty(FACING, state.getValue(FACING)).withProperty(BURNING, false), 3);
 		
 		if(tileentity != null) 
 		{
@@ -99,7 +100,13 @@ public class BlockSinteringFurnace extends BlockBase implements ITileEntityProvi
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) 
+	public boolean hasTileEntity(IBlockState state) 
+	{
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) 
 	{
 		return new TileEntitySinteringFurnace();
 	}
@@ -114,14 +121,6 @@ public class BlockSinteringFurnace extends BlockBase implements ITileEntityProvi
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) 
 	{
 		worldIn.setBlockState(pos, this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
-	}
-	
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) 
-	{
-		TileEntitySinteringFurnace tileentity = (TileEntitySinteringFurnace)worldIn.getTileEntity(pos);
-		InventoryHelper.dropInventoryItems(worldIn, pos, tileentity);
-		super.breakBlock(worldIn, pos, state);
 	}
 	
 	@Override
@@ -161,5 +160,4 @@ public class BlockSinteringFurnace extends BlockBase implements ITileEntityProvi
 	{
 		return ((EnumFacing)state.getValue(FACING)).getIndex();
 	}	
-	
 }

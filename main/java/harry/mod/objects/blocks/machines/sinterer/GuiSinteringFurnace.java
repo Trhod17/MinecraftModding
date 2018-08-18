@@ -1,6 +1,8 @@
-package harry.mod.objects.blocks.machines.sinterer;
+package harry.mods.tutorialmod.blocks.gui;
 
-import harry.mod.util.Reference;
+import harry.mods.tutorialmod.Reference;
+import harry.mods.tutorialmod.blocks.container.ContainerSinteringFurnace;
+import harry.mods.tutorialmod.blocks.tileentity.TileEntitySinteringFurnace;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
