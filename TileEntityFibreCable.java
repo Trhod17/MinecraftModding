@@ -30,49 +30,76 @@ public class TileEntityFibreCable extends TileEntity implements ITickable {
 		}
 
 		if (checkMaster()) {
-			testNeighbors();
+			if (isMaster) {
+				testNeighbors();
 
-			Map<TileEntity, Integer> inputs = new HashMap<>(), outputs = new HashMap<>();
-			for (TileEntity te : this.inputs) {
-				inputs.put(te, te.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(20, true));
-			}
-
-			for (TileEntity te : this.outputs) {
-				outputs.put(te, te.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(20, true));
-			}
-
-			Entry[] possibleInputs = inputs.entrySet().stream().filter(entry -> ((int) entry.getValue()) > 0)
-					.toArray(Entry[]::new);
-			Entry[] possibleOutputs = outputs.entrySet().stream().filter(entry -> ((int) entry.getValue()) > 0)
-					.toArray(Entry[]::new);
-
-			int maxIn = 0, maxOut = 0;
-			for (Entry entry : possibleInputs) {
-				maxIn += (int) entry.getValue();
-			}
-			for (Entry entry : possibleOutputs) {
-				maxOut += (int) entry.getValue();
-			}
-
-			if (maxIn > maxOut) {
-				for (Entry entry : possibleOutputs) {
-					((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(20, false);
+				Map<TileEntity, Integer> inputs = new HashMap<>(), outputs = new HashMap<>();
+				for (TileEntity te : this.inputs) {
+					inputs.put(te, te.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(20, true));
 				}
 
-				int currentIn = 0;
+				for (TileEntity te : this.outputs) {
+					outputs.put(te, te.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(20, true));
+				}
+
+				Entry[] possibleInputs = inputs.entrySet().stream().filter(entry -> ((int) entry.getValue()) > 0)
+						.toArray(Entry[]::new);
+				Entry[] possibleOutputs = outputs.entrySet().stream().filter(entry -> ((int) entry.getValue()) > 0)
+						.toArray(Entry[]::new);
+
+				for (int i = 0; i < possibleInputs.length; i++) {
+					Entry e = possibleInputs[i];
+					for (int j = 0; j < possibleOutputs.length; j++) {
+						if (e.equals(possibleOutputs[j])) {
+							IEnergyStorage storage = ((TileEntity) e.getKey()).getCapability(CapabilityEnergy.ENERGY,
+									null);
+							if (storage.getEnergyStored() > storage.getMaxEnergyStored() / 2) {
+								possibleInputs[i] = null;
+							} else {
+								possibleOutputs[j] = null;
+							}
+						}
+					}
+				}
+
+				int maxIn = 0, maxOut = 0;
 				for (Entry entry : possibleInputs) {
-					currentIn += ((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null)
-							.extractEnergy(Math.min(20, maxIn - currentIn), false);
+					if (entry != null) {
+						maxIn += (int) entry.getValue();
+					}
 				}
-			} else {
-				int currentOut = 0;
 				for (Entry entry : possibleOutputs) {
-					currentOut += ((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null)
-							.receiveEnergy(Math.min(20, maxOut - currentOut), false);
+					if (entry != null) {
+						maxOut += (int) entry.getValue();
+					}
 				}
 
-				for (Entry entry : possibleInputs) {
-					((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(20, false);
+				if (maxIn > maxOut) {
+					for (Entry entry : possibleOutputs) {
+						if (entry != null)
+							((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(20,
+									false);
+					}
+
+					int currentIn = 0;
+					for (Entry entry : possibleInputs) {
+						if (entry != null)
+							currentIn += ((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null)
+									.extractEnergy(Math.min(20, maxIn - currentIn), false);
+					}
+				} else {
+					int currentOut = 0;
+					for (Entry entry : possibleOutputs) {
+						if (entry != null)
+							currentOut += ((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null)
+									.receiveEnergy(Math.min(20, maxOut - currentOut), false);
+					}
+
+					for (Entry entry : possibleInputs) {
+						if (entry != null)
+							((TileEntity) entry.getKey()).getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(20,
+									false);
+					}
 				}
 			}
 		}
@@ -80,7 +107,7 @@ public class TileEntityFibreCable extends TileEntity implements ITickable {
 
 	public void onUpdate() {
 		if (hasMaster) {
-			update();
+			((TileEntityFibreCable)world.getTileEntity(new BlockPos(masterX, masterY, masterZ))).onUpdate();
 		} else {
 			init();
 		}
@@ -141,9 +168,12 @@ public class TileEntityFibreCable extends TileEntity implements ITickable {
 	}
 
 	private void init() {
-		this.masterX = pos.getX();
-		this.masterY = pos.getY();
-		this.masterZ = pos.getZ();
+		if(isMaster)
+		{
+			this.masterX = pos.getX();
+			this.masterY = pos.getY();
+			this.masterZ = pos.getZ();
+		}
 
 		initialised = true;
 		TileEntity[] surroundings = { world.getTileEntity(pos.up()), world.getTileEntity(pos.down()),
@@ -262,7 +292,8 @@ public class TileEntityFibreCable extends TileEntity implements ITickable {
 					IEnergyStorage storage = te.getCapability(CapabilityEnergy.ENERGY, null);
 					if (storage.canExtract()) {
 						inputs.add(te);
-					} else if (storage.canReceive()) {
+					}
+					if (storage.canReceive()) {
 						outputs.add(te);
 					}
 				}
